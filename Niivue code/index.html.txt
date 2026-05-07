@@ -43,8 +43,8 @@
         async function loadBrain() {
             try {
                 const volumeList = [
-                    { url: "mni152.nii.gz", colorMap: "gray" },
-                    { url: "stats_map.nii.gz", colorMap: "redyell", cal_min: 3.09, cal_max: 8.0 }
+                    { url: "mni152.nii", colorMap: "gray" },
+                    { url: "spmF_0004_5", colorMap: "redyell", cal_min: 3.09, cal_max: 8.0 }
                 ];
                 await nv.loadVolumes(volumeList);
                 console.log("NiiVue 載入完成");
@@ -64,7 +64,7 @@ loadBrain();
         // 2. 載入資料
         const volumeList = [
             {
-                url: "icbm_mni152_t1_09a_asym_2.nii.gz",
+                url: "mni152.nii",
                 colorMap: "gray",
                 opacity: 1,
                 visible: true
