@@ -64,7 +64,7 @@ loadBrain();
         // 2. 載入資料
         const volumeList = [
             {
-                url: "icbm_mni152_t1_09a_asym_2.nii",
+                url: "icbm_mni152_t1_09a_asym_2.nii.gz",
                 colorMap: "gray",
                 opacity: 1,
                 visible: true
