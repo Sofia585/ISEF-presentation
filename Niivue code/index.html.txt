@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>segmentation network</title>
     <!-- 引入 NiiVue 核心函式庫 (CDN 版本) -->
-    <script src="https://github.com/niivue/niivue.git"></script>
+    <script src="https://github.com/niivue/mono.git"></script>
     <style>
         body { margin: 0; background-color: black; color: white; font-family: sans-serif; overflow: hidden; }
         #canvas-container { width: 100vw; height: 100vh; }
