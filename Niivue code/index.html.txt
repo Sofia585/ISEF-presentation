@@ -44,13 +44,13 @@
         // 2. 載入資料
         const volumeList = [
             {
-                url: "mni152.nii.gz",
+                url: "icbm_mni152_t1_09a_asym_2.nii",
                 colorMap: "gray",
                 opacity: 1,
                 visible: true
             },
             {
-                url: "stats_map.nii.gz",
+                url: "spmF_0004_5.nii",
                 colorMap: "redyell", // 使用紅-黃漸層
                 cal_min: 3.09,       // p < 0.001 的門檻 (假設是 z-score)
                 cal_max: 8.0,        // 最高亮度數值
