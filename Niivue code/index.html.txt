@@ -8,8 +8,8 @@
     <script src="https://github.com/niivue/mono.git"></script>
     <style>
         body { margin: 0; background-color: black; color: white; font-family: sans-serif; overflow: hidden; }
-        #canvas-container { width: 100vw; height: 100vh; }
-        canvas { display: block; }
+        #canvas-container { width: 100vw; height: 100vh; /* 確保佔滿整個螢幕高度 */display: flex; }
+        canvas { width: 100%; height: 100%; display: block; }
         #info-panel { position: absolute; top: 20px; left: 20px; pointer-events: none; }
         .hint { position: absolute; bottom: 20px; width: 100%; text-align: center; color: #888; font-size: 14px; }
     </style>
@@ -30,11 +30,31 @@
     <script>
         // 1. 初始化 NiiVue
         const nv = new niivue.Niivue({
-            loadingText: "Loading...",
+            onImageLoaded: () => { console.log("影像載入成功！"); },
+            loadingText: "正在努力載入大腦中...",
             backColor: [0, 0, 0, 1],
             show3Dcrosshair: true,
             isColorbar: true // 顯示右側數值色標
         });
+
+        nv.attachTo('canvas');
+
+        // 使用 try-catch 來抓取隱藏錯誤
+        async function loadBrain() {
+            try {
+                const volumeList = [
+                    { url: "mni152.nii.gz", colorMap: "gray" },
+                    { url: "stats_map.nii.gz", colorMap: "redyell", cal_min: 3.09, cal_max: 8.0 }
+                ];
+                await nv.loadVolumes(volumeList);
+                console.log("NiiVue 載入完成");
+            } catch (err) {
+                // 如果失敗，直接在網頁畫面上顯示錯誤字樣
+                document.body.innerHTML += `<div style="color:red; position:absolute; top:50%; width:100%; text-align:center;">載入失敗原因: ${err}</div>`;
+            }
+        }
+
+loadBrain();
 
         nv.attachTo('canvas');
         
@@ -44,13 +64,13 @@
         // 2. 載入資料
         const volumeList = [
             {
-                url: "icbm_mni152_t1_09a_asym_2.nii.gz",
+                url: "icbm_mni152_t1_09a_asym_2.nii",
                 colorMap: "gray",
                 opacity: 1,
                 visible: true
             },
             {
-                url: "spmF_0004_5.nii.gz",
+                url: "spmF_0004_5.nii",
                 colorMap: "redyell", // 使用紅-黃漸層
                 cal_min: 3.09,       // p < 0.001 的門檻 (假設是 z-score)
                 cal_max: 8.0,        // 最高亮度數值
