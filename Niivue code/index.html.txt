@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>segmentation network</title>
+    <!-- 引入 NiiVue 核心函式庫 (CDN 版本) -->
+    <script src="https://niivue.github.io/niivue/features/niivue.umd.js"></script>
+    <style>
+        body { margin: 0; background-color: black; color: white; font-family: sans-serif; overflow: hidden; }
+        #canvas-container { width: 100vw; height: 100vh; }
+        canvas { display: block; }
+        #info-panel { position: absolute; top: 20px; left: 20px; pointer-events: none; }
+        .hint { position: absolute; bottom: 20px; width: 100%; text-align: center; color: #888; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div id="info-panel">
+        <h2>Display</h2>
+        <p>t\threshold: p < 0.001</p>
+    </div>
+
+    <div id="canvas-container">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="hint">Touch the screen to rotate and zoom | Swipe with two fingers to view slices</div>
+
+    <script>
+        // 1. 初始化 NiiVue
+        const nv = new niivue.Niivue({
+            loadingText: "Loading...",
+            backColor: [0, 0, 0, 1],
+            show3Dcrosshair: true,
+            isColorbar: true // 顯示右側數值色標
+        });
+
+        nv.attachTo('canvas');
+        
+        // 設定顯示模式為 3D 渲染 (最吸睛)
+        nv.setSliceType(nv.sliceTypeRender);
+
+        // 2. 載入資料
+        const volumeList = [
+            {
+                url: "mni152.nii.gz",
+                colorMap: "gray",
+                opacity: 1,
+                visible: true
+            },
+            {
+                url: "stats_map.nii.gz",
+                colorMap: "redyell", // 使用紅-黃漸層
+                cal_min: 3.09,       // p < 0.001 的門檻 (假設是 z-score)
+                cal_max: 8.0,        // 最高亮度數值
+                opacity: 1,
+                visible: true
+            }
+        ];
+
+        nv.loadVolumes(volumeList);
+
+        // 3. 自動旋轉邏輯
+        let azimuth = 0;
+        let rotateInterval;
+        let resetTimer;
+
+        function startRotation() {
+            rotateInterval = setInterval(() => {
+                azimuth = (azimuth + 0.5) % 360; // 調整 0.5 改速度
+                nv.setAzimuth(azimuth);
+            }, 30);
+        }
+
+        function stopRotation() {
+            clearInterval(rotateInterval);
+            clearTimeout(resetTimer);
+            // 10秒無人操作後重新開始旋轉
+            resetTimer = setTimeout(startRotation, 10000);
+        }
+
+        // 4. 監聽互動事件 (有人操作時暫停旋轉)
+        const canvas = document.getElementById('canvas');
+        canvas.addEventListener('touchstart', stopRotation);
+        canvas.addEventListener('mousedown', stopRotation);
+        canvas.addEventListener('wheel', stopRotation);
+
+        // 啟動初始旋轉
+        startRotation();
+
+    </script>
+</body>
+</html>
